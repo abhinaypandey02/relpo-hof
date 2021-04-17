@@ -105,9 +105,11 @@ export default function RidePage() {
           </span>
         </div>
         <div className="col-md-4 d-flex align-items-center  p-3 justify-content-center flex-column">
-          <button className="btn btn-outline-dark flex-grow-1 w-100 mb-1 ">
-            {" "}
-            CHAT{" "}
+          <button
+            onClick={() => setShowChats(true)}
+            className="btn btn-outline-dark flex-grow-1 w-100 mb-1 "
+          >
+            CHAT
           </button>
           <button className="btn btn-dark flex-grow-1 w-100 mt-1">
             GOOGLE MAPS{" "}
