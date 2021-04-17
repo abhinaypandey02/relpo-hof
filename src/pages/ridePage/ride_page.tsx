@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 import { useParams } from "react-router";
 import Loading from "../../components/loading/loading";
 import RideInterface from "../../interface/ride_interface";
 import UserInterface from "../../interface/user_interface";
-import { getRideByUID, getUserByUID } from "../../utils/firebase/firestore";
+import {
+  getRideByUID,
+  getUserByUID,
+  removeUserFromRide,
+} from "../../utils/firebase/firestore";
+import ChatBox from "./chatBox/chat_box";
 import userimage from "./user.png";
 
 export default function RidePage() {
@@ -11,6 +17,7 @@ export default function RidePage() {
   const [ride, setRide] = useState<null | undefined | RideInterface>(undefined);
   const [participants, setParticipants] = useState<UserInterface[]>([]);
   const [host, setHost] = useState<null | UserInterface>(null);
+  const [showChats, setShowChats] = useState(false);
   useEffect(() => {
     getRideByUID(params.rideID).then((doc: any) => {
       if (doc) setRide(doc?.data());
@@ -36,6 +43,12 @@ export default function RidePage() {
   if (ride === null) return <div>NOT FOUND :(</div>;
   return (
     <div className="container min-vh-100 ">
+      <Modal centered show={showChats} onHide={() => setShowChats(false)}>
+        <Modal.Header closeButton>Chat</Modal.Header>
+        <Modal.Body>
+          <ChatBox />
+        </Modal.Body>
+      </Modal>
       <div className="row ">
         <div className="col-md-8 p-3 d-flex align-items-center justify-content-center">
           <span className="border border-dark">
@@ -133,11 +146,11 @@ export default function RidePage() {
             </div>
           </div>
           <div className="col-md-4  d-flex align-items-center justify-content-center flex-column">
-            <button className="btn btn-success flex-grow-1 w-100 mb-1">
-              ALLOW
-            </button>
-            <button className="btn btn-danger flex-grow-1 w-100 mt-1">
-              DENY
+            <button
+              onClick={() => removeUserFromRide(p.uuid, ride)}
+              className="btn btn-danger flex-grow-1 w-100 mt-1"
+            >
+              KICK
             </button>
           </div>
         </div>
