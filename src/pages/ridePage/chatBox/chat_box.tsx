@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useUser } from "../../../contexts/user_context";
-import RideInterface from "../../../interface/ride_interface";
 import UserInterface from "../../../interface/user_interface";
 import fire from "../../../utils/firebase/firebase";
 import { RideWithID } from "../ride_page";
@@ -40,7 +39,7 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
         tempChats.sort((a, b) => a.timestamp - b.timestamp);
         setChats(tempChats);
       });
-  }, []);
+  }, [ride.docID]);
   return (
     <div className="container min-vh-50">
       <div

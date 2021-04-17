@@ -7,7 +7,6 @@ import RideInterface from "../../interface/ride_interface";
 import UserInterface from "../../interface/user_interface";
 import fire from "../../utils/firebase/firebase";
 import {
-  getRideByUID,
   getUserByUID,
   removeUserFromRide,
 } from "../../utils/firebase/firestore";
