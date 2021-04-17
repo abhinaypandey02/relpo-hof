@@ -6,17 +6,69 @@ import { createUserDocument } from "../../utils/firebase/firestore";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [cPasswordError, setCPasswordError] = useState("");
+
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
+  function validateEmail(email: any) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    //validation
-    signUpWithEmailAndPassword(email, password).then(() => {
-      createUserDocument({ email, name, phone });
-    });
+    setNameError("");
+    setCPasswordError("");
+    setEmailError("");
+    setPasswordError("");
+    if (name === "") {
+      setNameError("This field can't be empty");
+      return;
+    }
+    if (email === "") {
+      setEmailError("This field can't be empty");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setEmailError("Not valid email");
+      return;
+    }
+    if (password === "") {
+      setPasswordError("This field can't be empty");
+      return;
+    }
+    if (confirmPassword === "") {
+      setCPasswordError("This field can't be empty");
+      return;
+    }
+
+    if (password.length < 6) {
+      setPasswordError("Passsword must be atleast 6 digits");
+      return;
+    }
+    if (confirmPassword !== password) {
+      setCPasswordError("Passwords don't match");
+      return;
+    }
+    signUpWithEmailAndPassword(email, password)
+      .then(() => {
+        createUserDocument({ email, name, phone: "nothing!!" });
+      })
+      .catch((err) => {
+        console.log(err);
+        switch (err.code) {
+          case "auth/email-already-in-use": {
+            setEmailError("Email already in use!");
+            break;
+          }
+          default:
+            setCPasswordError(err.message);
+        }
+      });
   }
 
   return (
@@ -29,7 +81,7 @@ export default function SignupPage() {
           <br />
           <div className="row-fluid">
             <div className="col-fluid">
-              <form onSubmit={onSubmit}>
+              <form onSubmit={onSubmit} noValidate={true}>
                 <div className="mb-3">
                   <label htmlFor="exampleInputPassword1" className="form-label">
                     Name
@@ -44,6 +96,7 @@ export default function SignupPage() {
                     placeholder="Name"
                     id="exampleInputPassword1"
                   />
+                  <small className="text-danger">{nameError}</small>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="exampleInputEmail1" className="form-label">
@@ -60,21 +113,7 @@ export default function SignupPage() {
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
                   />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputPassword1" className="form-label">
-                    Phone
-                  </label>
-                  <input
-                    onChange={(event) => {
-                      setPhone(event.target.value);
-                    }}
-                    value={phone}
-                    type="password"
-                    className="form-control bg-dark"
-                    placeholder="Phone"
-                    id="exampleInputPassword1"
-                  />
+                  <small className="text-danger">{emailError}</small>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="exampleInputPassword1" className="form-label">
@@ -90,6 +129,7 @@ export default function SignupPage() {
                     placeholder="Password"
                     id="exampleInputPassword1"
                   />
+                  <small className="text-danger">{passwordError}</small>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="exampleInputPassword1" className="form-label">
@@ -105,6 +145,7 @@ export default function SignupPage() {
                     placeholder="Retype Password"
                     id="exampleInputPassword1"
                   />
+                  <small className="text-danger">{cPasswordError}</small>
                 </div>
                 <button
                   type="submit"
