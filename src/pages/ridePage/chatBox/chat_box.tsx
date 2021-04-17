@@ -38,11 +38,15 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
         data.docs.forEach((doc: any) => tempChats.push(doc.data()));
         tempChats.sort((a, b) => a.timestamp - b.timestamp);
         setChats(tempChats);
+        const element = document?.querySelector("#chat-box");
+        if (element)
+          element.scrollTop = element.scrollHeight - element.clientHeight;
       });
   }, [ride.docID]);
   return (
     <div className="container min-vh-50">
       <div
+        id="chat-box"
         className="row-fluid min-vh-75 overflow-auto mb-4 p-2"
         style={{ height: 500 }}
       >
