@@ -56,7 +56,7 @@ export default function RideInfo({
                 </tbody>
               </table>
               <button onClick={addRide} className="btn btn-dark">
-                Book
+                Join
               </button>
             </p>
           </div>
