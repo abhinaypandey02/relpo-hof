@@ -16,7 +16,7 @@ export async function getUserDocument(email:UserInterface['email']) {
 
 export async function addRide({name,ridersCount,city,lat,long,uuid,host,participants}:RideInterface) {
     console.log(host)
-    return await fire.firestore().collection('rides').add({name,ridersCount,city,lat,long,uuid,host});
+    return await fire.firestore().collection('rides').add({name,ridersCount,city,lat,long,uuid,host,participants});
     
 }
 export async function getUserByUID(uid:string) {
@@ -27,4 +27,10 @@ export async function getUserByUID(uid:string) {
 }
 export async function addRideToUser(user:UserInterface,rideID:RideInterface['uuid'],isHost:boolean) {
     return await fire.firestore().collection('users').doc(user.uuid).update(isHost?{ridesHosted:[...user.ridesHosted,rideID]}:{ridesJoined:[...user.ridesJoined,rideID]})
+}
+export async function getRideByUID(uid:RideInterface['uuid']) {
+    const data= await fire.firestore().collection('rides').where('uuid','==',uid).get();
+    if(data&&!data.empty&&data.docs.length===1&&data.docs[0].exists){
+        return data.docs[0];
+    } else return null;
 }

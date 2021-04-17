@@ -53,6 +53,7 @@ export default function DashboardPage() {
   const [selectedRide, setSelectedRide] = useState<null | RideWithDistance>(
     null
   );
+  const [yourRidesVisibility, setYourRidesVisibility] = useState(false);
   const closeRideInfo = () => setSelectedRide(null);
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -113,6 +114,23 @@ export default function DashboardPage() {
     <div className="section1">
       <Modal
         centered
+        show={yourRidesVisibility}
+        onHide={() => setYourRidesVisibility(false)}
+      >
+        <Modal.Header closeButton>Your Rides</Modal.Header>
+        <Modal.Body>
+          {user &&
+            hostedRides
+              .filter(
+                (ride) =>
+                  ride.host === user?.uuid ||
+                  ride.participants.includes(user?.uuid)
+              )
+              .map((ride) => <RideCard ride={ride} />)}
+        </Modal.Body>
+      </Modal>
+      <Modal
+        centered
         show={selectedRide !== null}
         onHide={() => {
           setSelectedRide(null);
@@ -170,19 +188,25 @@ export default function DashboardPage() {
         <Modal.Header closeButton>Join a ride</Modal.Header>
         <Modal.Body>
           {!selectedRide &&
-            hostedRides.map((ride) => (
-              <div
-                onClick={() => {
-                  setJoinModalVisibility(false);
-                  setTimeout(() => setSelectedRide(ride), 100);
-                }}
-              >
-                <RideCard key={ride.uuid} ride={ride} />
-              </div>
-            ))}
+            hostedRides
+              .filter((ride) => ride.host !== user?.uuid)
+              .map((ride) => (
+                <div
+                  onClick={() => {
+                    setJoinModalVisibility(false);
+                    setTimeout(() => setSelectedRide(ride), 100);
+                  }}
+                  className="pointer-on-hover"
+                >
+                  <RideCard key={ride.uuid} ride={ride} />
+                </div>
+              ))}
         </Modal.Body>
       </Modal>
       <div className="container" id="base">
+        <Button onClick={() => setYourRidesVisibility(true)}>
+          YOUR RIDES!
+        </Button>
         <div className="row-fluid ">
           <div className="col-fluid text-center text-inline">
             <h3 className="display-2">Hi,{user?.name}</h3>
