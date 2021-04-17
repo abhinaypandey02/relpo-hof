@@ -78,7 +78,7 @@ export default function DashboardPage() {
       }).then(() => {
         addRideToUser(user, tempUID, true);
         setHostModalVisibility(false);
-        alert("Ride Hosted!");
+        history.push("/ride" + tempUID);
         setRideName("");
         setRidersCount(0);
         setCity("");

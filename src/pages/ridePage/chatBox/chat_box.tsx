@@ -43,7 +43,7 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
   return (
     <div className="container min-vh-50">
       <div
-        className="row-fluid min-vh-75 overflow-auto mb-4"
+        className="row-fluid min-vh-75 overflow-auto mb-4 p-2"
         style={{ height: 500 }}
       >
         {chats.map((chat) => (

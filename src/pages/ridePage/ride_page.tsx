@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import Loading from "../../components/loading/loading";
 import { useUser } from "../../contexts/user_context";
 import RideInterface from "../../interface/ride_interface";
@@ -19,6 +19,7 @@ export interface RideWithID extends RideInterface {
 
 export default function RidePage() {
   const params: any = useParams();
+  const history = useHistory();
   const [user] = useUser();
   const [ride, setRide] = useState<null | undefined | RideWithID>(undefined);
   const [participants, setParticipants] = useState<UserInterface[]>([]);
@@ -30,9 +31,18 @@ export default function RidePage() {
       .collection("rides")
       .where("uuid", "==", params.rideID)
       .onSnapshot((data: any) => {
-        if (data && data.docs.length === 1)
-          setRide({ ...data.docs[0].data(), docID: data.docs[0].id });
-        else setRide(null);
+        if (data && data.docs.length === 1) {
+          {
+            if (!user) return;
+            const _ride = data.docs[0].data();
+            if (
+              !_ride.participants.includes(user?.uuid) &&
+              _ride.host !== user.uuid
+            ) {
+              history.push("/home");
+            } else setRide({ ..._ride, docID: data.docs[0].id });
+          }
+        } else setRide(null);
       });
   }, [params.rideID]);
   useEffect(() => {
