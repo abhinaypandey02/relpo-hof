@@ -136,6 +136,12 @@ export default function RidePage() {
           >
             CHAT
           </button>
+          <button
+         
+            className="btn btn-outline-danger flex-grow-1 w-100 mb-1 "
+          >
+            DELETE RIDE
+          </button>
         </div>
       </div>
       {participants.length > 0 && (
