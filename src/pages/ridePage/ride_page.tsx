@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useParams } from "react-router";
 import Loading from "../../components/loading/loading";
+import { useUser } from "../../contexts/user_context";
 import RideInterface from "../../interface/ride_interface";
 import UserInterface from "../../interface/user_interface";
+import fire from "../../utils/firebase/firebase";
 import {
   getRideByUID,
   getUserByUID,
@@ -14,15 +16,20 @@ import userimage from "./user.png";
 
 export default function RidePage() {
   const params: any = useParams();
+  const [user] = useUser();
   const [ride, setRide] = useState<null | undefined | RideInterface>(undefined);
   const [participants, setParticipants] = useState<UserInterface[]>([]);
   const [host, setHost] = useState<null | UserInterface>(null);
   const [showChats, setShowChats] = useState(false);
   useEffect(() => {
-    getRideByUID(params.rideID).then((doc: any) => {
-      if (doc) setRide(doc?.data());
-      else setRide(null);
-    });
+    fire
+      .firestore()
+      .collection("rides")
+      .where("uuid", "==", params.rideID)
+      .onSnapshot((data: any) => {
+        if (data && data.docs.length === 1) setRide(data.docs[0].data());
+        else setRide(null);
+      });
   }, [params.rideID]);
   useEffect(() => {
     async function t() {
@@ -145,14 +152,16 @@ export default function RidePage() {
               </div>
             </div>
           </div>
-          <div className="col-md-4  d-flex align-items-center justify-content-center flex-column">
-            <button
-              onClick={() => removeUserFromRide(p.uuid, ride)}
-              className="btn btn-danger flex-grow-1 w-100 mt-1"
-            >
-              KICK
-            </button>
-          </div>
+          {user?.uuid === ride.host && (
+            <div className="col-md-4  d-flex align-items-center justify-content-center flex-column">
+              <button
+                onClick={() => removeUserFromRide(p.uuid, ride)}
+                className="btn btn-danger flex-grow-1 w-100 mt-1"
+              >
+                KICK
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>

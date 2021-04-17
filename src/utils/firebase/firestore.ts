@@ -34,6 +34,7 @@ export async function addUserToRide(user:UserInterface,ride:RideInterface) {
     return await fire.firestore().collection('rides').doc(id).update({participants:[...ride.participants,user.uuid]})
 }
 export async function removeUserFromRide(userID:string,ride:RideInterface) {
+    console.log(userID)
     const id=(await fire.firestore().collection('rides').where('uuid','==',ride.uuid).get()).docs[0].id;
     if(!ride.participants.includes(userID))return;
     return await fire.firestore().collection('rides').doc(id).update({participants:ride.participants.filter(p=>p!=userID)})
