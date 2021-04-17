@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router";
 import { useUser } from "../../../contexts/user_context";
 import { RideWithDistance } from "../../../interface/ride_interface";
 import {
@@ -14,10 +15,14 @@ export default function RideInfo({
   closeRideInfo: any;
 }) {
   const [user] = useUser();
+  const history = useHistory();
   function addRide() {
     if (user)
       addRideToUser(user, ride.uuid, false).then(() =>
-        addUserToRide(user, ride).then(closeRideInfo)
+        addUserToRide(user, ride).then(() => {
+          closeRideInfo();
+          history.push("/ride/" + ride.uuid);
+        })
       );
   }
 

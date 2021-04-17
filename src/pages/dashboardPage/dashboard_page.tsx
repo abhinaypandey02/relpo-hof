@@ -61,6 +61,8 @@ export default function DashboardPage() {
   const closeRideInfo = () => setSelectedRide(null);
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (rideName === "") return;
+    if (city === "") return;
     //verification
     const tempUID = uuidv4();
     if (user)
@@ -77,6 +79,9 @@ export default function DashboardPage() {
         addRideToUser(user, tempUID, true);
         setHostModalVisibility(false);
         alert("Ride Hosted!");
+        setRideName("");
+        setRidersCount(0);
+        setCity("");
       });
   }
   async function processRides(rides: any) {
@@ -178,7 +183,10 @@ export default function DashboardPage() {
               <Form.Label>No. of riders</Form.Label>
               <Form.Control
                 value={ridersCount}
-                onChange={(e) => setRidersCount(parseInt(e.target.value))}
+                onChange={(e) => {
+                  if (parseInt(e.target.value) >= 0)
+                    setRidersCount(parseInt(e.target.value));
+                }}
                 type={"number"}
               />
             </Form.Group>
