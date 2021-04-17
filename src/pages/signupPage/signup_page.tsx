@@ -1,11 +1,12 @@
 import "./signup_page.css";
+import SITE_META from "../../metadata/site_meta";
 
 export default function SignupPage(){
     return <div className="section1">
         <div className="container" id="base">
             <div className="row-fluid ">
                 <div className="col-fluid text-center">
-                    <h3 className="display-1">Relpo</h3>
+                    <h3 className="display-1">{SITE_META.appName}</h3>
                 </div>
                 <br/>
                     <div className="row-fluid">
