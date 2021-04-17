@@ -17,9 +17,9 @@ export default function RidePage() {
   if (ride === undefined) return <Loading />;
   if (ride === null) return <div>NOT FOUND :(</div>;
   return <div className='container min-vh-100 p-3 '>
-    <div className='row p-3 '>
+    <div className='row pt-4'>
       <div className='col-md-8 d-flex align-items-center justify-content-center'>
-      <span className="border border-dark  mt-2">
+      <span className="border border-dark my-auto">
         <div className="card">
           <div className='card-header'>Title</div>
           <div className="row g-0">
@@ -73,7 +73,7 @@ export default function RidePage() {
         </span>
       </div>
       <div className="col-md-4 d-flex align-items-center justify-content-center flex-wrap flex-row">
-        <button className="btn btn-outline-dark h-50 w-100 mb-1 mt-md-2"> CHAT </button>
+        <button className="btn btn-outline-dark h-50 w-100 mb-1 "> CHAT </button>
         <br/>
         <button className="btn btn-dark h-50 w-100 ">GOOGLE MAPS </button>
       </div>
