@@ -33,7 +33,6 @@ export default function RidePage() {
       .doc(ride?.docID)
       .get();
     data.ref.delete();
-    alert("RIDE DELETED");
     history.push("/home");
   }
 
@@ -52,7 +51,9 @@ export default function RidePage() {
           ) {
             history.push("/home");
           } else setRide({ ..._ride, docID: data.docs[0].id });
-        } else setRide(null);
+        } else {
+          history.push("/home");
+        }
       });
     //eslint-disable-next-line
   }, [params.rideID]);
@@ -136,12 +137,14 @@ export default function RidePage() {
           >
             CHAT
           </button>
-          <button
-         
-            className="btn btn-outline-danger flex-grow-1 w-100 mb-1 "
-          >
-            DELETE RIDE
-          </button>
+          {user?.uuid === ride.host && (
+            <button
+              onClick={deleteRide}
+              className="btn btn-outline-danger flex-grow-1 w-100 mb-1 "
+            >
+              DELETE RIDE
+            </button>
+          )}
         </div>
       </div>
       {participants.length > 0 && (
