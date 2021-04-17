@@ -1,6 +1,7 @@
 const ROUTES_META={
     signUp:'/sign-up',
-    logIn:'/login'
+    logIn:'/login',
+    dashBoard:'/dashboard'
 
 }
 export default ROUTES_META;
