@@ -3,10 +3,14 @@ export default interface UserInterface{
     email:string;
     phone:number;
     uuid:string;
+    ridesJoined:string[];
+    ridesHosted:string[];
 }
 export const defaultUser:UserInterface={
     name:'',
     email:'',
     phone:-1,
-    uuid:''
+    uuid:'',
+    ridesJoined:[],
+    ridesHosted:[]
 }

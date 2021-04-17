@@ -8,6 +8,7 @@ export default interface RideInterface{
     long:number;
     uuid:string;
     host:string;
+    participants:string[];
 }
 export interface RideWithDistance extends RideInterface {
     distance: number;

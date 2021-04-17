@@ -3,7 +3,11 @@ import "./dashboard_page.css";
 import { Form, Modal, Button } from "react-bootstrap";
 import React, { FormEvent, useEffect, useState } from "react";
 import { usePosition } from "../../components/useLocation/useLocation";
-import { addRide, getUserByUID } from "../../utils/firebase/firestore";
+import {
+  addRide,
+  addRideToUser,
+  getUserByUID,
+} from "../../utils/firebase/firestore";
 import RideInterface, {
   RideWithDistance,
 } from "../../interface/ride_interface";
@@ -49,10 +53,11 @@ export default function DashboardPage() {
   const [selectedRide, setSelectedRide] = useState<null | RideWithDistance>(
     null
   );
+  const closeRideInfo = () => setSelectedRide(null);
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     //verification
-    console.log(user?.uuid);
+    const tempUID = uuidv4();
     if (user)
       addRide({
         name: rideName,
@@ -60,9 +65,11 @@ export default function DashboardPage() {
         city,
         lat: latitude,
         long: longitude,
-        uuid: uuidv4(),
+        uuid: tempUID,
         host: user?.uuid,
+        participants: [],
       }).then(() => {
+        addRideToUser(user, tempUID, true);
         setHostModalVisibility(false);
         alert("Ride Hosted!");
       });
@@ -114,7 +121,9 @@ export default function DashboardPage() {
       >
         <Modal.Header closeButton>Book {selectedRide?.name}</Modal.Header>
         <Modal.Body>
-          {selectedRide && <RideInfo ride={selectedRide} />}
+          {selectedRide && (
+            <RideInfo closeRideInfo={closeRideInfo} ride={selectedRide} />
+          )}
         </Modal.Body>
       </Modal>
       <Modal
