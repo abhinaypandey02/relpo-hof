@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import { useUser } from "../../../contexts/user_context";
 import RideInterface from "../../../interface/ride_interface";
 import UserInterface from "../../../interface/user_interface";
@@ -15,7 +16,8 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
   const [chats, setChats] = useState<ChatInterface[]>([]);
   const [message, setMessage] = useState("");
   const [user] = useUser();
-  function sendChat() {
+  function sendChat(e: any) {
+    e.preventDefault();
     setMessage("");
     fire
       .firestore()
@@ -56,25 +58,26 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
         ))}
       </div>
       <div className="row-fluid flex-grow-1 d-flex">
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Send a message"
-            aria-label="Recipient's username"
-            aria-describedby="button-addon2"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button
-            className="btn btn-outline-secondary"
-            type="button"
-            id="button-addon2"
-            onClick={sendChat}
-          >
-            Button
-          </button>
-        </div>
+        <Form className="w-100" onSubmit={sendChat}>
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Send a message"
+              aria-label="Recipient's username"
+              aria-describedby="button-addon2"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <button
+              className="btn btn-outline-secondary"
+              type="submit"
+              id="button-addon2"
+            >
+              Send
+            </button>
+          </div>
+        </Form>
       </div>
     </div>
   );
