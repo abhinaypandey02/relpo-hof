@@ -129,7 +129,7 @@ export default function RidePage() {
         </div>
         </div>
         <div className="col-md-4  d-flex align-items-center justify-content-center flex-column">
-        <button className="btn btn-outline-success flex-grow-1 w-100 mb-1 "> ALLOW </button>
+        <button className="btn btn-success flex-grow-1 w-100 mb-1 "> ALLOW </button>
         <br/>
         <button className="btn btn-danger flex-grow-1 w-100 ">DENY </button>
       </div>
