@@ -21,7 +21,7 @@ export async function addRide({name,ridersCount,city,lat,long,uuid,host,particip
 }
 export async function getUserByUID(uid:string) {
     const data= await fire.firestore().collection('users').doc(uid).get();
-    if(data.exists)return data.data()
+    if(data.exists)return {...data.data(),uuid:data.id}
     else return null;
     
 }
@@ -34,7 +34,6 @@ export async function addUserToRide(user:UserInterface,ride:RideInterface) {
     return await fire.firestore().collection('rides').doc(id).update({participants:[...ride.participants,user.uuid]})
 }
 export async function removeUserFromRide(userID:string,ride:RideInterface) {
-    console.log(userID)
     const id=(await fire.firestore().collection('rides').where('uuid','==',ride.uuid).get()).docs[0].id;
     if(!ride.participants.includes(userID))return;
     return await fire.firestore().collection('rides').doc(id).update({participants:ride.participants.filter(p=>p!=userID)})

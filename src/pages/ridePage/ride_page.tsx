@@ -157,7 +157,9 @@ export default function RidePage() {
           {user?.uuid === ride.host && (
             <div className="col-md-4  d-flex align-items-center justify-content-center flex-column">
               <button
-                onClick={() => removeUserFromRide(p.uuid, ride)}
+                onClick={() => {
+                  removeUserFromRide(p.uuid, ride);
+                }}
                 className="btn btn-danger flex-grow-1 w-100 mt-1"
               >
                 KICK
