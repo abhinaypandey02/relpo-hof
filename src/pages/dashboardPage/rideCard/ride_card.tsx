@@ -7,11 +7,7 @@ export default function RideCard({ ride }: { ride: RideWithDistance }) {
     <div className="card mb-3">
       <div className="row g-0">
         <div className="col-md-4 d-flex justify-content-center align-content-center">
-          <img
-            src="https://source.unsplash.com/2000x2000/?cycle,bike"
-            alt="..."
-            className="img-fluid"
-          />
+          IMAGE
         </div>
         <div className="badge badge-warning m-2" style={{ height: 20 }}>
           {ride.host === user?.uuid && "HOST"}
