@@ -6,11 +6,7 @@ export default function RideCard({ ride }: { ride: RideWithDistance }) {
   return (
     <div className="card mb-3">
       <div className="row g-0">
-        <div className="col-md-4 d-flex justify-content-center align-content-center">
-          IMAGE
-        </div>
-        
-        <div className="col-md-8">
+        <div className="col-md-12">
           <div className="card-body">
             <h5 className="card-title">{ride.name} Ride</h5>
             <p className="card-text">
@@ -31,8 +27,8 @@ export default function RideCard({ ride }: { ride: RideWithDistance }) {
                 </tbody>
               </table>
               <div className="badge badge-warning m-2" style={{ height: 20 }}>
-          {ride.host === user?.uuid && "HOST"}
-        </div>
+                {ride.host === user?.uuid && "HOST"}
+              </div>
             </p>
           </div>
         </div>
