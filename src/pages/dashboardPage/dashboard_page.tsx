@@ -228,6 +228,7 @@ export default function DashboardPage() {
         <Modal.Body>
           {!selectedRide &&
             hostedRides &&
+            hostedRides.filter((ride) => ride.host !== user?.uuid).length > 0 &&
             hostedRides
               .filter((ride) => ride.host !== user?.uuid)
               .map((ride) => (
@@ -241,6 +242,12 @@ export default function DashboardPage() {
                   <RideCard key={ride.uuid} ride={ride} />
                 </div>
               ))}
+          {!selectedRide &&
+            hostedRides &&
+            hostedRides.filter((ride) => ride.host !== user?.uuid).length ===
+              0 && (
+              <div className="text-center text-danger">NO RIDES NEAR YOU! </div>
+            )}
         </Modal.Body>
       </Modal>
       <div className="container" id="base">
