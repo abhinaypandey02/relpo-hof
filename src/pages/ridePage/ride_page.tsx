@@ -14,10 +14,14 @@ import {
 import ChatBox from "./chatBox/chat_box";
 import userimage from "./user.png";
 
+export interface RideWithID extends RideInterface {
+  docID: string;
+}
+
 export default function RidePage() {
   const params: any = useParams();
   const [user] = useUser();
-  const [ride, setRide] = useState<null | undefined | RideInterface>(undefined);
+  const [ride, setRide] = useState<null | undefined | RideWithID>(undefined);
   const [participants, setParticipants] = useState<UserInterface[]>([]);
   const [host, setHost] = useState<null | UserInterface>(null);
   const [showChats, setShowChats] = useState(false);
@@ -27,7 +31,8 @@ export default function RidePage() {
       .collection("rides")
       .where("uuid", "==", params.rideID)
       .onSnapshot((data: any) => {
-        if (data && data.docs.length === 1) setRide(data.docs[0].data());
+        if (data && data.docs.length === 1)
+          setRide({ ...data.docs[0].data(), docID: data.docs[0].id });
         else setRide(null);
       });
   }, [params.rideID]);
@@ -53,7 +58,7 @@ export default function RidePage() {
       <Modal centered show={showChats} onHide={() => setShowChats(false)}>
         <Modal.Header closeButton>Chat</Modal.Header>
         <Modal.Body>
-          <ChatBox />
+          <ChatBox ride={ride} />
         </Modal.Body>
       </Modal>
       <div className="row ">
