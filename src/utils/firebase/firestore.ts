@@ -14,7 +14,14 @@ export async function getUserDocument(email:UserInterface['email']) {
     } else return null;
 }
 
-export async function addRide({name,ridersCount,city,lat,long,uuid}:RideInterface) {
-    return await fire.firestore().collection('rides').add({name,ridersCount,city,lat,long,uuid});
+export async function addRide({name,ridersCount,city,lat,long,uuid,host}:RideInterface) {
+    console.log(host)
+    return await fire.firestore().collection('rides').add({name,ridersCount,city,lat,long,uuid,host});
+    
+}
+export async function getUserByUID(uid:string) {
+    const data= await fire.firestore().collection('users').doc(uid).get();
+    if(data.exists)return data.data()
+    else return null;
     
 }

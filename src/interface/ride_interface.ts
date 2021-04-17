@@ -1,3 +1,5 @@
+import UserInterface from "./user_interface";
+
 export default interface RideInterface{
     name:string;
     ridersCount:number;
@@ -5,7 +7,10 @@ export default interface RideInterface{
     lat:number;
     long:number;
     uuid:string;
+    host:string;
 }
 export interface RideWithDistance extends RideInterface {
     distance: number;
+    user:UserInterface;
+
   }

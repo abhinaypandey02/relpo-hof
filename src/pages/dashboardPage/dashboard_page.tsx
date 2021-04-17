@@ -3,13 +3,14 @@ import "./dashboard_page.css";
 import { Form, Modal, Button } from "react-bootstrap";
 import React, { FormEvent, useEffect, useState } from "react";
 import { usePosition } from "../../components/useLocation/useLocation";
-import { addRide } from "../../utils/firebase/firestore";
+import { addRide, getUserByUID } from "../../utils/firebase/firestore";
 import RideInterface, {
   RideWithDistance,
 } from "../../interface/ride_interface";
 import fire from "../../utils/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 import RideCard from "./rideCard/ride_card";
+import RideInfo from "./rideInfo/ride_info";
 
 function rad(x: number) {
   return (x * Math.PI) / 180;
@@ -26,12 +27,12 @@ function getDistance(
   var dLong = rad(rideLong - currLong);
   var a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(rad(rideLong)) *
-      Math.cos(rad(rideLat)) *
+    Math.cos(rad(rideLat)) *
+      Math.cos(rad(currLat)) *
       Math.sin(dLong / 2) *
       Math.sin(dLong / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
+  var d = (R * c )/1000;
   return d; // returns the distance in meter
 }
 
@@ -44,35 +45,47 @@ export default function DashboardPage() {
   const [rideName, setRideName] = useState("");
   const [ridersCount, setRidersCount] = useState(0);
   const [city, setCity] = useState("");
-  // const [selectedRide, setSelectedRide] = useState(null);
+  const [selectedRide, setSelectedRide] = useState<null | RideWithDistance>(
+    null
+  );
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     //verification
-    addRide({
-      name: rideName,
-      ridersCount,
-      city,
-      lat: latitude,
-      long: longitude,
-      uuid: uuidv4(),
-    }).then(() => {
-      setHostModalVisibility(false);
-      alert("Ride Hosted!");
-    });
+    console.log(user?.uuid);
+    if (user)
+      addRide({
+        name: rideName,
+        ridersCount,
+        city,
+        lat: latitude,
+        long: longitude,
+        uuid: uuidv4(),
+        host: user?.uuid,
+      }).then(() => {
+        setHostModalVisibility(false);
+        alert("Ride Hosted!");
+      });
   }
-  function processRides(rides: any) {
+  async function processRides(rides: any) {
     const tempRides: RideWithDistance[] = [];
-    rides.forEach((ride: any) => {
+    for (let ride of rides) {
+      const rideUser = await getUserByUID(ride.host);
       tempRides.push({
         ...ride,
         distance: getDistance(ride.lat, ride.long, latitude, longitude),
+        user: rideUser,
       });
-    });
+    }
     tempRides.sort((a, b) => a.distance - b.distance);
     return tempRides;
   }
   useEffect(() => {
-    setHostedRides((rides) => processRides(rides));
+    async function t() {
+      const newrides: any = await processRides(hostedRides);
+      setHostedRides((rides) => newrides);
+    }
+    t();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latitude, longitude]);
 
@@ -80,16 +93,29 @@ export default function DashboardPage() {
     fire
       .firestore()
       .collection("rides")
-      .onSnapshot((snapshot) => {
+      .onSnapshot(async (snapshot) => {
         const rides: RideInterface[] = [];
         snapshot.docs.forEach((doc: any) => rides.push(doc.data()));
-        setHostedRides(processRides(rides));
+        setHostedRides(await processRides(rides));
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="section1">
+      <Modal
+        centered
+        show={selectedRide !== null}
+        onHide={() => {
+          setSelectedRide(null);
+          setJoinModalVisibility(true);
+        }}
+      >
+        <Modal.Header closeButton>Book {selectedRide?.name}</Modal.Header>
+        <Modal.Body>
+          {selectedRide && <RideInfo ride={selectedRide} />}
+        </Modal.Body>
+      </Modal>
       <Modal
         centered
         show={hostModalVisibility}
@@ -120,8 +146,8 @@ export default function DashboardPage() {
                 onChange={(e) => setCity(e.target.value)}
               />
             </Form.Group>
-            <Button variant="warning" className="rounded-pill" type="submit">
-              Host2
+            <Button variant="dark" className="rounded-pill" type="submit">
+              Host Now
             </Button>
           </Form>
         </Modal.Body>
@@ -133,9 +159,17 @@ export default function DashboardPage() {
       >
         <Modal.Header closeButton>Join a ride</Modal.Header>
         <Modal.Body>
-          {hostedRides.map((ride) => (
-            <RideCard key={ride.uuid} ride={ride} />
-          ))}
+          {!selectedRide &&
+            hostedRides.map((ride) => (
+              <div
+                onClick={() => {
+                  setJoinModalVisibility(false);
+                  setTimeout(() => setSelectedRide(ride), 100);
+                }}
+              >
+                <RideCard key={ride.uuid} ride={ride} />
+              </div>
+            ))}
         </Modal.Body>
       </Modal>
       <div className="container" id="base">

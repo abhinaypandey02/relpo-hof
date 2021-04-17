@@ -18,7 +18,6 @@
 #loginb{
     border-radius: 4rem;
     min-width: 100%;
-    font-size: 1em;
 }
 #loginb:hover{
     background-color:rgba(56, 56, 56, 0.267);
@@ -33,9 +32,7 @@ h3{
     color: rgb(140, 0, 255);
     font-weight: 700 !important;
 }
-form{
-    font-size: 2em;
-}
+
 #exampleInputEmail1, #exampleInputPassword1{
     border-radius: 4rem;
     border: none;
