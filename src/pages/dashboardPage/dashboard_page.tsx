@@ -34,9 +34,9 @@ function getDistance(
   var a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(rad(rideLat)) *
-    Math.cos(rad(currLat)) *
-    Math.sin(dLong / 2) *
-    Math.sin(dLong / 2);
+      Math.cos(rad(currLat)) *
+      Math.sin(dLong / 2) *
+      Math.sin(dLong / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = (R * c) / 1000;
   return d; // returns the distance in meter
@@ -133,6 +133,11 @@ export default function DashboardPage() {
         <Modal.Body>
           {user &&
             hostedRides &&
+            hostedRides.filter(
+              (ride) =>
+                ride.host === user?.uuid ||
+                ride.participants.includes(user?.uuid)
+            ).length > 0 &&
             hostedRides
               .filter(
                 (ride) =>
@@ -147,6 +152,17 @@ export default function DashboardPage() {
                   <RideCard ride={ride} />
                 </div>
               ))}
+          {user &&
+            hostedRides &&
+            hostedRides.filter(
+              (ride) =>
+                ride.host === user?.uuid ||
+                ride.participants.includes(user?.uuid)
+            ).length === 0 && (
+              <div className="text-danger text-center">
+                YOU HAVE NOT HOSTED OR JOINED ANY RIDES YET.
+              </div>
+            )}
         </Modal.Body>
       </Modal>
       <Modal
@@ -228,7 +244,6 @@ export default function DashboardPage() {
         </Modal.Body>
       </Modal>
       <div className="container" id="base">
-
         <div className="row-fluid ">
           <div className="col-fluid text-center text-inline">
             <h3 className="display-2">Hi,{user?.name}</h3>
@@ -247,15 +262,18 @@ export default function DashboardPage() {
               >
                 HOST
               </button>
-              </div>
-              <div className="col-fluid">
-                <Button type="button"
-                  className="btn btn-dark"
-                  id="buttonsbox" onClick={() => setYourRidesVisibility(true)}>
-                  YOUR RIDES!
-                </Button>
-              </div>
-            
+            </div>
+            <div className="col-fluid">
+              <Button
+                type="button"
+                className="btn btn-dark"
+                id="buttonsbox"
+                onClick={() => setYourRidesVisibility(true)}
+              >
+                YOUR RIDES!
+              </Button>
+            </div>
+
             <div className="col-fluid">
               <button
                 onClick={() => setJoinModalVisibility(true)}
@@ -278,7 +296,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
