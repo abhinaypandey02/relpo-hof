@@ -74,8 +74,7 @@ export default function RidePage() {
       </div>
       <div className="col-md-4 d-flex align-items-center  p-3 justify-content-center flex-column">
         <button className="btn btn-outline-dark flex-grow-1 w-100 mb-1 "> CHAT </button>
-        <br/>
-        <button className="btn btn-dark flex-grow-1 w-100 ">GOOGLE MAPS </button>
+        <button className="btn btn-dark flex-grow-1 w-100 mt-1">GOOGLE MAPS </button>
       </div>
     </div>
     <div className="row d-flex align-items-center justify-content-center mt-4">
