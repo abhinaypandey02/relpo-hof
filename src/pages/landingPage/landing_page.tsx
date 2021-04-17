@@ -15,7 +15,7 @@ export default function LandingPage(){
                     <div className="row-fluid">
                         <div className="col-fluid">
 
-                                <button type="button" className="btn btn-outline-dark" id="loginb">Login</button>
+                                <button onClick={()=>{history.push(ROUTES_META.logIn)}} type="button" className="btn btn-outline-dark" id="loginb">Login</button>
 
                         </div>
                         <br/>
