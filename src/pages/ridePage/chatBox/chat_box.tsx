@@ -49,6 +49,7 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
           >
             <div>{chat.message}</div>
             <small className="text-muted">
+              {chat.sender.name} |{" "}
               {new Date(chat.timestamp).toLocaleTimeString()}
             </small>
           </div>
