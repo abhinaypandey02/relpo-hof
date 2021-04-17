@@ -252,7 +252,7 @@ export default function DashboardPage() {
                 <Button type="button"
                   className="btn btn-dark"
                   id="buttonsbox" onClick={() => setYourRidesVisibility(true)}>
-                  YOUR RIDES!
+                  YOUR RIDES
                 </Button>
               </div>
             
