@@ -17,7 +17,6 @@ import RideCard from "./rideCard/ride_card";
 import RideInfo from "./rideInfo/ride_info";
 import { signOut } from "../../utils/firebase/auth";
 import { useHistory } from "react-router-dom";
-import { GoogleApiWrapper } from "google-maps-react";
 import { MapContainer } from "../../components/googleMaps/google_maps";
 
 function rad(x: number) {

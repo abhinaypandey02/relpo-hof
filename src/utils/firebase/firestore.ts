@@ -33,6 +33,11 @@ export async function addUserToRide(user:UserInterface,ride:RideInterface) {
     if(ride.participants.includes(user.uuid))return;
     return await fire.firestore().collection('rides').doc(id).update({participants:[...ride.participants,user.uuid]})
 }
+export async function removeUserFromRide(userID:string,ride:RideInterface) {
+    const id=(await fire.firestore().collection('rides').where('uuid','==',ride.uuid).get()).docs[0].id;
+    if(!ride.participants.includes(userID))return;
+    return await fire.firestore().collection('rides').doc(id).update({participants:ride.participants.filter(p=>p!=userID)})
+}
 export async function getRideByUID(uid:RideInterface['uuid']) {
     const data= await fire.firestore().collection('rides').where('uuid','==',uid).get();
     if(data&&!data.empty&&data.docs.length===1&&data.docs[0].exists){
