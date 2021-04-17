@@ -19,8 +19,8 @@ export default function RidePage() {
   return <div className='container min-vh-100 p-3 '>
     <div className='row p-3 '>
       <div className='col-md-8 d-flex align-items-center justify-content-center'>
-      <span class="border border-white"></span>
-        <div className="card ">
+      <span className="border border-dark  mt-2">
+        <div className="card">
           <div className='card-header'>Title</div>
           <div className="row g-0">
             <div className="col-md-4 d-flex justify-content-center align-items-center">
@@ -70,9 +70,10 @@ export default function RidePage() {
             </div>
           </div>
         </div>
+        </span>
       </div>
       <div className="col-md-4 d-flex align-items-center justify-content-center flex-wrap flex-row">
-        <button className="btn btn-outline-dark h-50 w-100 mb-1"> CHAT </button>
+        <button className="btn btn-outline-dark h-50 w-100 mb-1 mt-md-2"> CHAT </button>
         <br/>
         <button className="btn btn-dark h-50 w-100 ">GOOGLE MAPS </button>
       </div>
