@@ -27,7 +27,7 @@ export default function RideCard({ ride }: { ride: RideWithDistance }) {
                 </tbody>
               </table>
               <div className="badge badge-warning m-2" style={{ height: 20 }}>
-                {ride.host === user?.uuid && "You are HOST"}
+                {ride.host === user?.uuid && "You are the Host"}
               </div>
             </p>
           </div>
