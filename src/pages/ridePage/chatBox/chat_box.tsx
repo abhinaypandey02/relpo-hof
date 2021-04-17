@@ -18,13 +18,14 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
   const [user] = useUser();
   function sendChat(e: any) {
     e.preventDefault();
-    setMessage("");
+    if (message === "") return;
     fire
       .firestore()
       .collection("rides")
       .doc(ride.docID)
       .collection("chats")
       .add({ message, sender: user, timestamp: new Date().getTime() });
+    setMessage("");
   }
 
   useEffect(() => {
@@ -42,7 +43,10 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
   }, []);
   return (
     <div className="container min-vh-50">
-      <div className="row-fluid min-vh-75" style={{ height: 500 }}>
+      <div
+        className="row-fluid min-vh-75 overflow-auto mb-4"
+        style={{ height: 500 }}
+      >
         {chats.map((chat) => (
           <div
             className={
@@ -73,6 +77,7 @@ export default function ChatBox({ ride }: { ride: RideWithID }) {
               className="btn btn-outline-secondary"
               type="submit"
               id="button-addon2"
+              disabled={message === ""}
             >
               Send
             </button>
