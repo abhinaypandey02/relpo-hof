@@ -17,7 +17,6 @@ import RideCard from "./rideCard/ride_card";
 import RideInfo from "./rideInfo/ride_info";
 import { signOut } from "../../utils/firebase/auth";
 import { useHistory } from "react-router-dom";
-import { time } from "node:console";
 
 function rad(x: number) {
   return (x * Math.PI) / 180;
