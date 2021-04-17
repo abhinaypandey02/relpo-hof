@@ -116,9 +116,6 @@ export default function RidePage() {
           >
             CHAT
           </button>
-          <button className="btn btn-dark flex-grow-1 w-100 mt-1">
-            GOOGLE MAPS{" "}
-          </button>
         </div>
       </div>
       {participants.length > 0 && (
