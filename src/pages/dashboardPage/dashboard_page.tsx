@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import RideCard from "./rideCard/ride_card";
 import RideInfo from "./rideInfo/ride_info";
 import { signOut } from "../../utils/firebase/auth";
+import { useHistory } from "react-router-dom";
 
 function rad(x: number) {
   return (x * Math.PI) / 180;
@@ -53,6 +54,7 @@ export default function DashboardPage() {
   const [selectedRide, setSelectedRide] = useState<null | RideWithDistance>(
     null
   );
+  const history = useHistory();
   const [yourRidesVisibility, setYourRidesVisibility] = useState(false);
   const closeRideInfo = () => setSelectedRide(null);
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -126,7 +128,14 @@ export default function DashboardPage() {
                   ride.host === user?.uuid ||
                   ride.participants.includes(user?.uuid)
               )
-              .map((ride) => <RideCard ride={ride} />)}
+              .map((ride) => (
+                <div
+                  onClick={() => history.push("/ride/" + ride.uuid)}
+                  className="pointer-on-hover"
+                >
+                  <RideCard ride={ride} />
+                </div>
+              ))}
         </Modal.Body>
       </Modal>
       <Modal

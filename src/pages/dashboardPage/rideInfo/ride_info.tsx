@@ -1,7 +1,10 @@
 import React from "react";
 import { useUser } from "../../../contexts/user_context";
 import { RideWithDistance } from "../../../interface/ride_interface";
-import { addRideToUser } from "../../../utils/firebase/firestore";
+import {
+  addRideToUser,
+  addUserToRide,
+} from "../../../utils/firebase/firestore";
 
 export default function RideInfo({
   ride,
@@ -12,7 +15,10 @@ export default function RideInfo({
 }) {
   const [user] = useUser();
   function addRide() {
-    if (user) addRideToUser(user, ride.uuid, false).then(closeRideInfo);
+    if (user)
+      addRideToUser(user, ride.uuid, false).then(() =>
+        addUserToRide(user, ride).then(closeRideInfo)
+      );
   }
 
   return (
