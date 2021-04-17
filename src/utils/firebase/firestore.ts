@@ -28,6 +28,10 @@ export async function getUserByUID(uid:string) {
 export async function addRideToUser(user:UserInterface,rideID:RideInterface['uuid'],isHost:boolean) {
     return await fire.firestore().collection('users').doc(user.uuid).update(isHost?{ridesHosted:[...user.ridesHosted,rideID]}:{ridesJoined:[...user.ridesJoined,rideID]})
 }
+export async function addUserToRide(user:UserInterface,ride:RideInterface) {
+    const id=(await fire.firestore().collection('rides').where('uuid','==',ride.uuid).get()).docs[0].id;
+    return await fire.firestore().collection('rides').doc(id).update({participants:[...ride.participants,user.uuid]})
+}
 export async function getRideByUID(uid:RideInterface['uuid']) {
     const data= await fire.firestore().collection('rides').where('uuid','==',uid).get();
     if(data&&!data.empty&&data.docs.length===1&&data.docs[0].exists){

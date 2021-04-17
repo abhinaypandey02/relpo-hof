@@ -16,6 +16,8 @@ import { v4 as uuidv4 } from "uuid";
 import RideCard from "./rideCard/ride_card";
 import RideInfo from "./rideInfo/ride_info";
 import { signOut } from "../../utils/firebase/auth";
+import { useHistory } from "react-router-dom";
+import { time } from "node:console";
 
 function rad(x: number) {
   return (x * Math.PI) / 180;
@@ -46,13 +48,16 @@ export default function DashboardPage() {
   const { latitude, longitude } = usePosition();
   const [hostModalVisibility, setHostModalVisibility] = useState(false);
   const [joinModalVisibility, setJoinModalVisibility] = useState(false);
-  const [hostedRides, setHostedRides] = useState<RideWithDistance[]>([]);
+  const [hostedRides, setHostedRides] = useState<
+    RideWithDistance[] | undefined
+  >(undefined);
   const [rideName, setRideName] = useState("");
   const [ridersCount, setRidersCount] = useState(0);
   const [city, setCity] = useState("");
   const [selectedRide, setSelectedRide] = useState<null | RideWithDistance>(
     null
   );
+  const history = useHistory();
   const [yourRidesVisibility, setYourRidesVisibility] = useState(false);
   const closeRideInfo = () => setSelectedRide(null);
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -76,6 +81,7 @@ export default function DashboardPage() {
       });
   }
   async function processRides(rides: any) {
+    console.log(latitude);
     const tempRides: RideWithDistance[] = [];
     for (let ride of rides) {
       const rideUser = await getUserByUID(ride.host);
@@ -89,6 +95,7 @@ export default function DashboardPage() {
     return tempRides;
   }
   useEffect(() => {
+    if (!longitude || !latitude || !hostedRides) return;
     async function t() {
       const newrides: any = await processRides(hostedRides);
       setHostedRides((rides) => newrides);
@@ -99,6 +106,7 @@ export default function DashboardPage() {
   }, [latitude, longitude]);
 
   useEffect(() => {
+    if (hostedRides || !longitude || !latitude) return;
     fire
       .firestore()
       .collection("rides")
@@ -108,7 +116,7 @@ export default function DashboardPage() {
         setHostedRides(await processRides(rides));
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [latitude, longitude]);
 
   return (
     <div className="section1">
@@ -120,13 +128,21 @@ export default function DashboardPage() {
         <Modal.Header closeButton>Your Rides</Modal.Header>
         <Modal.Body>
           {user &&
+            hostedRides &&
             hostedRides
               .filter(
                 (ride) =>
                   ride.host === user?.uuid ||
                   ride.participants.includes(user?.uuid)
               )
-              .map((ride) => <RideCard ride={ride} />)}
+              .map((ride) => (
+                <div
+                  onClick={() => history.push("/ride/" + ride.uuid)}
+                  className="pointer-on-hover"
+                >
+                  <RideCard ride={ride} />
+                </div>
+              ))}
         </Modal.Body>
       </Modal>
       <Modal
@@ -188,6 +204,7 @@ export default function DashboardPage() {
         <Modal.Header closeButton>Join a ride</Modal.Header>
         <Modal.Body>
           {!selectedRide &&
+            hostedRides &&
             hostedRides
               .filter((ride) => ride.host !== user?.uuid)
               .map((ride) => (
