@@ -18,6 +18,8 @@
     background-color:transparent;
     border-radius: 0rem;
     border: white solid 1px;
+    min-width: 10rem;
+    min-height: 10rem;
 
 }
 
