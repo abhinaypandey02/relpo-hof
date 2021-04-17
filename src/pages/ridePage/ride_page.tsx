@@ -25,6 +25,18 @@ export default function RidePage() {
   const [participants, setParticipants] = useState<UserInterface[]>([]);
   const [host, setHost] = useState<null | UserInterface>(null);
   const [showChats, setShowChats] = useState(false);
+
+  async function deleteRide() {
+    const data = await fire
+      .firestore()
+      .collection("rides")
+      .doc(ride?.docID)
+      .get();
+    data.ref.delete();
+    alert("RIDE DELETED");
+    history.push("/home");
+  }
+
   useEffect(() => {
     fire
       .firestore()
