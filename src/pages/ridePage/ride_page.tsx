@@ -32,18 +32,17 @@ export default function RidePage() {
       .where("uuid", "==", params.rideID)
       .onSnapshot((data: any) => {
         if (data && data.docs.length === 1) {
-          {
-            if (!user) return;
-            const _ride = data.docs[0].data();
-            if (
-              !_ride.participants.includes(user?.uuid) &&
-              _ride.host !== user.uuid
-            ) {
-              history.push("/home");
-            } else setRide({ ..._ride, docID: data.docs[0].id });
-          }
+          if (!user) return;
+          const _ride = data.docs[0].data();
+          if (
+            !_ride.participants.includes(user?.uuid) &&
+            _ride.host !== user.uuid
+          ) {
+            history.push("/home");
+          } else setRide({ ..._ride, docID: data.docs[0].id });
         } else setRide(null);
       });
+    //eslint-disable-next-line
   }, [params.rideID]);
   useEffect(() => {
     async function t() {
