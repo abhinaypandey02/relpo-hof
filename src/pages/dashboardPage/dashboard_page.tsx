@@ -11,6 +11,7 @@ import fire from "../../utils/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 import RideCard from "./rideCard/ride_card";
 import RideInfo from "./rideInfo/ride_info";
+import { signOut } from "../../utils/firebase/auth";
 
 function rad(x: number) {
   return (x * Math.PI) / 180;
@@ -32,7 +33,7 @@ function getDistance(
       Math.sin(dLong / 2) *
       Math.sin(dLong / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = (R * c )/1000;
+  var d = (R * c) / 1000;
   return d; // returns the distance in meter
 }
 
@@ -93,7 +94,7 @@ export default function DashboardPage() {
     fire
       .firestore()
       .collection("rides")
-      .onSnapshot(async (snapshot) => {
+      .onSnapshot(async (snapshot: any) => {
         const rides: RideInterface[] = [];
         snapshot.docs.forEach((doc: any) => rides.push(doc.data()));
         setHostedRides(await processRides(rides));
@@ -204,11 +205,12 @@ export default function DashboardPage() {
             </div>
             <div className="col-fluid">
               <button
+                onClick={signOut}
                 type="button"
                 className="btn btn-dark text-wrap"
                 id="buttonsbox"
               >
-                SOLO
+                SIGN OUT
               </button>
             </div>
           </div>
