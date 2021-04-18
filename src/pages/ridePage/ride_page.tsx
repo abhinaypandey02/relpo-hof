@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useHistory, useParams } from "react-router";
 import Loading from "../../components/loading/loading";
+import { usePosition } from "../../components/useLocation/useLocation";
 import { useUser } from "../../contexts/user_context";
 import RideInterface from "../../interface/ride_interface";
 import UserInterface from "../../interface/user_interface";
@@ -16,16 +17,40 @@ import userimage from "./user.png";
 export interface RideWithID extends RideInterface {
   docID: string;
 }
+function rad(x: number) {
+  return (x * Math.PI) / 180;
+}
 
+function getDistance(
+  rideLat: number,
+  rideLong: number,
+  currLat: number,
+  currLong: number
+) {
+  var R = 6378137; // Earth’s mean radius in meter
+  var dLat = rad(rideLat - currLat);
+  var dLong = rad(rideLong - currLong);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(rideLat)) *
+      Math.cos(rad(currLat)) *
+      Math.sin(dLong / 2) *
+      Math.sin(dLong / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = (R * c) / 1000;
+  return d; // returns the distance in meter
+}
 export default function RidePage() {
   const params: any = useParams();
   const history = useHistory();
+  const { latitude, longitude } = usePosition();
+
   const [user] = useUser();
   const [ride, setRide] = useState<null | undefined | RideWithID>(undefined);
   const [participants, setParticipants] = useState<UserInterface[]>([]);
   const [host, setHost] = useState<null | UserInterface>(null);
   const [showChats, setShowChats] = useState(false);
-
+  const [dis, setDis] = useState(0);
   async function deleteRide() {
     const data = await fire
       .firestore()
@@ -50,13 +75,19 @@ export default function RidePage() {
             _ride.host !== user.uuid
           ) {
             history.push("/home");
-          } else setRide({ ..._ride, docID: data.docs[0].id });
+          } else {
+            setRide({ ..._ride, docID: data.docs[0].id });
+          }
         } else {
           history.push("/home");
         }
       });
     //eslint-disable-next-line
   }, [params.rideID]);
+  useEffect(() => {
+    // console.log(ride.lat, latitude);
+    if (ride) setDis(getDistance(ride.lat, ride.long, latitude, longitude));
+  }, [ride, latitude, longitude]);
   useEffect(() => {
     async function t() {
       if (ride) {
@@ -117,7 +148,7 @@ export default function RidePage() {
                             <td>
                               <strong>Distance</strong>
                             </td>
-                            <td>km</td>
+                            <td>{dis}km</td>
                           </tr>
                           <tr>
                             <td>
