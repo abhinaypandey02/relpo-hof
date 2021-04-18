@@ -148,7 +148,7 @@ export default function RidePage() {
                             <td>
                               <strong>Distance</strong>
                             </td>
-                            <td>{dis}km</td>
+                            <td>{dis.toFixed()}km</td>
                           </tr>
                           <tr>
                             <td>
