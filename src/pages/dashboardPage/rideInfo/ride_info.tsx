@@ -31,6 +31,17 @@ export default function RideInfo({
       <div className="row g-0">
         <div className="col-md-12">
           <div className="card-body">
+            <img
+              className="m-2"
+              width={120}
+              height={120}
+              src={
+                ride.imageURL !== ""
+                  ? ride.imageURL
+                  : "https://www.iconbunny.com/icons/media/catalog/product/3/3/332.9-cycle-icon-iconbunny.jpg"
+              }
+              alt="ride"
+            />
             <h5 className="card-title">{ride.name}</h5>
             <p className="card-text">
               <table className="table">
