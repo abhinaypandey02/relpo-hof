@@ -3,6 +3,7 @@ import "./dashboard_page.css";
 import { Form, Modal, Button } from "react-bootstrap";
 import React, { FormEvent, useEffect, useState } from "react";
 import { usePosition } from "../../components/useLocation/useLocation";
+import plus from "./images/plus.png";
 import {
   addRide,
   addRideToUser,
@@ -17,6 +18,7 @@ import RideCard from "./rideCard/ride_card";
 import RideInfo from "./rideInfo/ride_info";
 import { signOut } from "../../utils/firebase/auth";
 import { useHistory } from "react-router-dom";
+import { uploadButtonImage } from "../../utils/firebase/storage";
 
 function rad(x: number) {
   return (x * Math.PI) / 180;
@@ -47,20 +49,27 @@ export default function DashboardPage() {
   const { latitude, longitude } = usePosition();
   const [hostModalVisibility, setHostModalVisibility] = useState(false);
   const [joinModalVisibility, setJoinModalVisibility] = useState(false);
+  const [image, setImage] = useState<any>();
   const [hostedRides, setHostedRides] = useState<
     RideWithDistance[] | undefined
   >(undefined);
   const [rideName, setRideName] = useState("");
   const [ridersCount, setRidersCount] = useState(0);
   const [city, setCity] = useState("");
+  const [loading, setLoading] = useState(false);
   const [selectedRide, setSelectedRide] = useState<null | RideWithDistance>(
     null
   );
   const history = useHistory();
   const [yourRidesVisibility, setYourRidesVisibility] = useState(false);
   const closeRideInfo = () => setSelectedRide(null);
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
+    let tempURL = "";
+    if (image) {
+      tempURL = await uploadButtonImage(user, image);
+    }
     if (rideName === "") return;
     if (city === "") return;
     //verification
@@ -75,6 +84,7 @@ export default function DashboardPage() {
         uuid: tempUID,
         host: user?.uuid,
         participants: [],
+        imageURL: tempURL,
       }).then(() => {
         addRideToUser(user, tempUID, true);
         setHostModalVisibility(false);
@@ -82,6 +92,7 @@ export default function DashboardPage() {
         setRideName("");
         setRidersCount(0);
         setCity("");
+        setLoading(false);
       });
   }
   async function processRides(rides: any) {
@@ -121,7 +132,9 @@ export default function DashboardPage() {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latitude, longitude]);
-
+  function onImageChange(e: any) {
+    setImage(e.target.files[0]);
+  }
   return (
     <div className="section1">
       <Modal
@@ -213,8 +226,40 @@ export default function DashboardPage() {
                 onChange={(e) => setCity(e.target.value)}
               />
             </Form.Group>
-            <Button variant="dark" className="rounded-pill" type="submit">
-              Host Now
+            <Form.Group>
+              <Form.Label>Add Image (Optional)</Form.Label>
+              <div
+                className="d-flex align-items-center justify-content-center pointer-on-hover"
+                style={{
+                  backgroundColor: "#F4F5F8",
+                  height: 109,
+                  width: 92,
+                }}
+                onClick={() => document.getElementById("choose_pp")?.click()}
+              >
+                <img
+                  alt="plus"
+                  height={image ? 109 : 27}
+                  width={image ? 92 : 27}
+                  src={image ? URL.createObjectURL(image) : plus}
+                />
+                <input
+                  id="choose_pp"
+                  style={{
+                    display: "none",
+                  }}
+                  type="file"
+                  onChange={onImageChange}
+                />
+              </div>
+            </Form.Group>
+            <Button
+              disabled={loading}
+              variant="dark"
+              className="rounded-pill"
+              type="submit"
+            >
+              {!loading ? "Host Now" : "Loading.."}
             </Button>
           </Form>
         </Modal.Body>
