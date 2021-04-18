@@ -84,12 +84,22 @@ export default function RidePage() {
       </Modal>
       <div className="row ">
         <div className="col-md-8 p-3 d-flex align-items-center justify-content-center">
-          <span className="border border-dark">
+          <span className="border border-dark w-100">
             <div className="card">
               <div className="card-header">{ride.name}</div>
               <div className="row g-0">
                 <div className="col-md-4 d-flex justify-content-center align-items-center">
-                  <img src={userimage} alt="..." className="img-fluid" />
+                  <img
+                    height={128}
+                    width={128}
+                    src={
+                      ride.imageURL !== ""
+                        ? ride.imageURL
+                        : "https://www.iconbunny.com/icons/media/catalog/product/3/3/332.9-cycle-icon-iconbunny.jpg"
+                    }
+                    alt="..."
+                    className="img-fluid m-3"
+                  />
                 </div>
                 <div
                   className="badge badge-warning"
